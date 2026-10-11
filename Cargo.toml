@@ -1,8 +1,8 @@
 [package]
 name = "gh-stats-cli"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
-description = "Show a GitHub user's repos, stars and languages in the terminal"
+description = "GitHub stats for any user or org, right in your terminal"
 license = "MIT"
 
 [[bin]]

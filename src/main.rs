@@ -1,21 +1,28 @@
+mod colors;
 mod github;
+mod render;
 mod stats;
 
+use std::io::IsTerminal;
+use std::process::ExitCode;
+
 use anyhow::Result;
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use serde::Serialize;
 
+use colors::Palette;
 use github::{Client, User};
 use stats::Stats;
 
-/// Show a GitHub user's repos, stars and languages.
+/// GitHub stats for any user or org, right in your terminal.
 #[derive(Parser)]
 #[command(name = "gh-stats", version)]
 struct Args {
-    /// GitHub username
-    user: String,
+    /// GitHub usernames or orgs
+    #[arg(required = true)]
+    users: Vec<String>,
 
-    /// How many repos to list in "top repos"
+    /// How many repos to list under "Top repos" (0 hides them)
     #[arg(short, long, default_value_t = 5)]
     top: usize,
 
@@ -23,78 +30,110 @@ struct Args {
     #[arg(long)]
     forks: bool,
 
-    /// Print JSON instead of the table
-    #[arg(long)]
+    /// Print JSON
+    #[arg(long, conflicts_with = "md")]
     json: bool,
+
+    /// Print Markdown, ready to paste into a profile README
+    #[arg(long)]
+    md: bool,
+
+    /// When to use colors
+    #[arg(long, value_enum, default_value_t = ColorMode::Auto)]
+    color: ColorMode,
+}
+
+#[derive(Clone, Copy, ValueEnum)]
+enum ColorMode {
+    Auto,
+    Always,
+    Never,
 }
 
 #[derive(Serialize)]
-struct Report<'a> {
-    user: &'a User,
+struct Report {
+    user: User,
     #[serde(flatten)]
-    stats: &'a Stats,
+    stats: Stats,
 }
 
-fn main() -> Result<()> {
+fn main() -> ExitCode {
     let args = Args::parse();
-    let token = std::env::var("GITHUB_TOKEN")
-        .or_else(|_| std::env::var("GH_TOKEN"))
-        .ok()
-        .filter(|t| !t.is_empty());
+    let client = Client::new(github::find_token());
 
-    let client = Client::new(token);
-    let user = client.user(&args.user)?;
-    let repos = client.repos(&args.user)?;
-    let stats = stats::collect(&repos, args.forks, args.top);
+    let mut reports = Vec::new();
+    let mut failed = false;
+    for login in &args.users {
+        match load(&client, login, &args) {
+            Ok(r) => reports.push(r),
+            Err(e) => {
+                eprintln!("gh-stats: {e:#}");
+                failed = true;
+            }
+        }
+    }
 
     if args.json {
-        let report = Report {
-            user: &user,
-            stats: &stats,
+        let json = match reports.as_slice() {
+            [one] => serde_json::to_string_pretty(one),
+            many => serde_json::to_string_pretty(many),
         };
-        println!("{}", serde_json::to_string_pretty(&report)?);
+        match json {
+            Ok(s) => println!("{s}"),
+            Err(e) => {
+                eprintln!("gh-stats: {e}");
+                failed = true;
+            }
+        }
     } else {
-        print_report(&user, &stats);
+        let palette = palette(args.color);
+        let width = terminal_width();
+        let blocks: Vec<String> = reports
+            .iter()
+            .map(|r| match args.md {
+                true => render::markdown(&r.user, &r.stats),
+                false => render::text(&r.user, &r.stats, palette, width),
+            })
+            .collect();
+        print!("{}", blocks.join("\n"));
     }
-    Ok(())
+
+    if failed {
+        ExitCode::FAILURE
+    } else {
+        ExitCode::SUCCESS
+    }
 }
 
-fn print_report(user: &User, stats: &Stats) {
-    match &user.name {
-        Some(name) => println!("{} ({name})", user.login),
-        None => println!("{}", user.login),
-    }
-    println!(
-        "repos {}  stars {}  forks {}  followers {}  following {}",
-        stats.repos, stats.stars, stats.forks, user.followers, user.following
-    );
+fn load(client: &Client, login: &str, args: &Args) -> Result<Report> {
+    let user = client.user(login)?;
+    let repos = client.repos(&user.login)?;
+    let stats = stats::collect(&repos, args.forks, args.top);
+    Ok(Report { user, stats })
+}
 
-    if !stats.languages.is_empty() {
-        println!("\nlanguages");
-        let width = stats
-            .languages
-            .iter()
-            .map(|l| l.name.len())
-            .max()
-            .unwrap_or(0);
-        let max = stats.languages[0].repos;
-        for lang in stats.languages.iter().take(8) {
-            let bar = "#".repeat((lang.repos * 20).div_ceil(max));
-            println!("  {:<width$}  {:>3}  {bar}", lang.name, lang.repos);
+fn palette(mode: ColorMode) -> Palette {
+    let on = match mode {
+        ColorMode::Always => true,
+        ColorMode::Never => false,
+        ColorMode::Auto => {
+            std::io::stdout().is_terminal() && std::env::var_os("NO_COLOR").is_none()
         }
+    };
+    let truecolor = std::env::var("COLORTERM")
+        .map(|v| v.contains("truecolor") || v.contains("24bit"))
+        .unwrap_or(false);
+    match (on, truecolor) {
+        (false, _) => Palette::None,
+        (true, true) => Palette::TrueColor,
+        (true, false) => Palette::Ansi256,
     }
+}
 
-    if !stats.top.is_empty() {
-        println!("\ntop repos");
-        let width = stats.top.iter().map(|r| r.name.len()).max().unwrap_or(0);
-        for r in &stats.top {
-            let lang = r.language.as_deref().unwrap_or("-");
-            let archived = if r.archived { "  (archived)" } else { "" };
-            let stars = match r.stargazers_count {
-                1 => "1 star ".to_string(),
-                n => format!("{n} stars"),
-            };
-            println!("  {:<width$}  {stars:>9}  {lang}{archived}", r.name);
-        }
-    }
+fn terminal_width() -> usize {
+    std::env::var("COLUMNS")
+        .ok()
+        .and_then(|c| c.parse().ok())
+        .unwrap_or(100)
+        .clamp(40, 160)
 }

@@ -1,25 +1,12 @@
-# gh-stats-cli
+# gh-stats
 
-Small CLI that shows a GitHub user's repos, stars and languages in the terminal. Uses the GitHub REST API.
+GitHub stats for any user or org, right in your terminal. Repos, stars, languages, top projects, in one command.
 
-```
-$ gh-stats CanReader
-CanReader (Canberk Pitirli)
-repos 58  stars 15  forks 4  followers 19  following 62
+<p align="center">
+  <img src="assets/demo.svg" alt="gh-stats rust-lang output" width="760">
+</p>
 
-languages
-  C++          16  ####################
-  Rust         14  ##################
-  JavaScript    4  #####
-  Python        4  #####
-  ...
-
-top repos
-  FastNN        4 stars  Rust
-  Tactix        3 stars  C++
-  RustVK        2 stars  Rust
-  ...
-```
+Language colors are the same ones GitHub uses, so it looks like your profile page.
 
 ## Install
 
@@ -27,28 +14,50 @@ top repos
 cargo install --git https://github.com/CanReader/gh-stats-cli
 ```
 
-Or clone it and run `cargo build --release`, the binary is `target/release/gh-stats`.
+Or clone and `cargo build --release`, the binary is `target/release/gh-stats`.
 
 ## Usage
 
 ```
-gh-stats <user>              summary for a user
-gh-stats <user> -t 10        show 10 top repos (default 5)
-gh-stats <user> --forks      count forked repos too
-gh-stats <user> --json       print JSON, handy for scripts
+gh-stats torvalds                  one user
+gh-stats rust-lang                 orgs work too
+gh-stats you yourfriend            several at once
+gh-stats you -t 10                 show 10 top repos (default 5, 0 hides them)
+gh-stats you --forks               count forked repos too
+gh-stats you --md                  Markdown for your profile README
+gh-stats you --json                JSON for scripts
 ```
 
-Forks are skipped by default so the numbers are about your own work. Languages are counted by each repo's main language.
+Forks are skipped by default so the numbers are about your own work. Languages are counted by each repo's main language, the same one GitHub shows on the repo page.
+
+## Put it in your profile README
+
+```
+gh-stats you --md
+```
+
+prints a short summary with a language table and your top repos with links. Paste it into your `username/username` README. It's plain Markdown, so no image service has to be up for it to show.
 
 ## Token
 
-Works without a token but GitHub only allows 60 requests an hour that way. Set `GITHUB_TOKEN` (or `GH_TOKEN`) to get the normal limit:
+It works without a token, but GitHub only gives 60 requests an hour that way. gh-stats looks for a token in this order:
 
-```
-export GITHUB_TOKEN=$(gh auth token)
-```
+1. `GITHUB_TOKEN`
+2. `GH_TOKEN`
+3. the GitHub CLI, if you're logged in with `gh auth login`
 
-The token only needs read access to public data.
+So if you use `gh` you don't have to set anything. Only public data is read.
+
+## Colors
+
+Colors turn off when the output isn't a terminal or when `NO_COLOR` is set. Use `--color always` or `--color never` to force it. True color is used when the terminal says it supports it, 256 colors otherwise.
+
+## Notes
+
+- Big accounts are fine, repos are fetched 100 at a time.
+- Network hiccups and GitHub 5xx errors are retried a couple of times before giving up.
+- If you hit the rate limit it tells you when it resets.
+- If one name in a list fails, the rest still print and the exit code is 1.
 
 ## License
 
