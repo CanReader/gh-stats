@@ -65,6 +65,15 @@ impl Client {
         })
     }
 
+    /// The user the token belongs to.
+    pub fn me(&self) -> Result<String> {
+        if self.token.is_none() {
+            bail!("no username given and not logged in, pass a name or run `gh auth login`");
+        }
+        let user: User = self.get("/user")?;
+        Ok(user.login)
+    }
+
     pub fn repos(&self, login: &str) -> Result<Vec<Repo>> {
         paginate(|page| {
             self.get(&format!(
@@ -80,7 +89,7 @@ impl Client {
             let mut req = self
                 .agent
                 .get(&url)
-                .header("User-Agent", "gh-stats-cli")
+                .header("User-Agent", "gh-stats")
                 .header("Accept", "application/vnd.github+json")
                 .header("X-GitHub-Api-Version", "2022-11-28");
             if let Some(token) = &self.token {

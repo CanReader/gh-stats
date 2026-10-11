@@ -156,7 +156,7 @@ pub fn markdown(user: &User, stats: &Stats) -> String {
         out.push('\n');
     }
 
-    out += "<sub>made with [gh-stats](https://github.com/CanReader/gh-stats-cli)</sub>\n";
+    out += "<sub>made with [gh-stats](https://github.com/CanReader/gh-stats)</sub>\n";
     out
 }
 

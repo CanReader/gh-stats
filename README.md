@@ -10,15 +10,26 @@ Language colors are the same ones GitHub uses, so it looks like your profile pag
 
 ## Install
 
+As a GitHub CLI extension:
+
 ```
-cargo install --git https://github.com/CanReader/gh-stats-cli
+gh extension install CanReader/gh-stats
+gh stats              # your own stats
+gh stats torvalds     # anyone else
 ```
 
-Or clone and `cargo build --release`, the binary is `target/release/gh-stats`.
+Or with cargo, which gives you a `gh-stats` binary:
+
+```
+cargo install --git https://github.com/CanReader/gh-stats
+```
+
+Prebuilt binaries for Linux, macOS and Windows are on the [releases page](https://github.com/CanReader/gh-stats/releases).
 
 ## Usage
 
 ```
+gh-stats                           you (if you're logged in with gh)
 gh-stats torvalds                  one user
 gh-stats rust-lang                 orgs work too
 gh-stats you yourfriend            several at once

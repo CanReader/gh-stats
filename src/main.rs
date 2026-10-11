@@ -18,8 +18,7 @@ use stats::Stats;
 #[derive(Parser)]
 #[command(name = "gh-stats", version)]
 struct Args {
-    /// GitHub usernames or orgs
-    #[arg(required = true)]
+    /// GitHub usernames or orgs (defaults to you, if you're logged in with gh)
     users: Vec<String>,
 
     /// How many repos to list under "Top repos" (0 hides them)
@@ -61,9 +60,20 @@ fn main() -> ExitCode {
     let args = Args::parse();
     let client = Client::new(github::find_token());
 
+    let users = match args.users.is_empty() {
+        true => match client.me() {
+            Ok(me) => vec![me],
+            Err(e) => {
+                eprintln!("gh-stats: {e:#}");
+                return ExitCode::FAILURE;
+            }
+        },
+        false => args.users.clone(),
+    };
+
     let mut reports = Vec::new();
     let mut failed = false;
-    for login in &args.users {
+    for login in &users {
         match load(&client, login, &args) {
             Ok(r) => reports.push(r),
             Err(e) => {

@@ -1,5 +1,5 @@
 [package]
-name = "gh-stats-cli"
+name = "gh-stats"
 version = "0.2.0"
 edition = "2021"
 description = "GitHub stats for any user or org, right in your terminal"
