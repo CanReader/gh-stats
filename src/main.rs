@@ -33,9 +33,13 @@ struct Args {
     #[arg(long, conflicts_with = "md")]
     json: bool,
 
-    /// Print Markdown, ready to paste into a profile README
+    /// Print Markdown, ready to paste into a profile README (public repos only)
     #[arg(long)]
     md: bool,
+
+    /// Leave out private repos
+    #[arg(long)]
+    public: bool,
 
     /// When to use colors
     #[arg(long, value_enum, default_value_t = ColorMode::Auto)]
@@ -117,8 +121,12 @@ fn main() -> ExitCode {
 
 fn load(client: &Client, login: &str, args: &Args) -> Result<Report> {
     let user = client.user(login)?;
-    let repos = client.repos(&user.login)?;
-    let stats = stats::collect(&repos, args.forks, args.top);
+    let with_private = !(args.public || args.md);
+    let mut repos = client.repos(&user, with_private)?;
+    if !with_private {
+        repos.retain(|r| !r.private);
+    }
+    let stats = stats::collect(&repos, args.forks, args.top, github::now_secs());
     Ok(Report { user, stats })
 }
 

@@ -34,25 +34,51 @@ pub fn text(user: &User, stats: &Stats, p: Palette, width: usize) -> String {
     );
 
     let mut totals = format!(
-        "  {} repos   {} stars   {} forks",
-        p.bold(&num(stats.repos as u32)),
+        "  {} repos   {} stars   forked {}",
+        p.bold(&num(stats.total as u32)),
         p.bold(&p.fg(STAR, &num(stats.stars))),
-        p.bold(&num(stats.forks)),
+        p.bold(&plural(stats.forks as usize, "time")),
     );
     if stats.archived > 0 {
         totals += &format!("   {} archived", stats.archived);
     }
     let _ = writeln!(out, "{totals}");
+
+    let mut split = match stats.private {
+        0 => format!("{} own", stats.own),
+        n => format!("{} own ({} public, {n} private)", stats.own, stats.public),
+    };
+    if stats.fork_repos > 0 {
+        split += &format!(", {}", plural(stats.fork_repos, "fork"));
+        if stats.repos < stats.total {
+            split += " left out of the stats (--forks adds them)";
+        }
+    }
+    if stats.private > 0 || stats.fork_repos > 0 {
+        let _ = writeln!(out, "  {}", p.dim(&split));
+    }
+
     if let Some(r) = &stats.last_push {
-        let date = r
-            .pushed_at
-            .as_deref()
-            .and_then(|d| d.get(..10))
-            .unwrap_or("");
         let _ = writeln!(
             out,
             "  {}",
-            p.dim(&format!("last push: {} on {date}", r.name))
+            p.dim(&format!(
+                "last push: {} on {}, {} active in the last 30 days",
+                r.name,
+                date(&r.pushed_at),
+                plural(stats.active_last_30_days, "repo")
+            ))
+        );
+    }
+    if let Some(r) = &stats.newest {
+        let _ = writeln!(
+            out,
+            "  {}",
+            p.dim(&format!(
+                "newest: {}, created {}",
+                r.name,
+                date(&r.created_at)
+            ))
         );
     }
 
@@ -105,7 +131,10 @@ pub fn text(user: &User, stats: &Stats, p: Palette, width: usize) -> String {
                 r.name,
                 p.fg(colors::language(lang), &format!("{lang:<lang_w$}")),
             );
-            let desc = strip_shortcodes(r.description.as_deref().unwrap_or(""));
+            let mut desc = strip_shortcodes(r.description.as_deref().unwrap_or(""));
+            if r.private {
+                desc = format!("(private) {desc}").trim_end().to_string();
+            }
             let room = width.saturating_sub(used);
             if !desc.is_empty() && room >= 12 {
                 line += &format!("  {}", p.dim(&truncate(&desc, room)));
@@ -127,8 +156,8 @@ pub fn markdown(user: &User, stats: &Stats) -> String {
     let _ = writeln!(out, "### {name} ([@{}]({}))\n", user.login, user.html_url);
     let _ = writeln!(
         out,
-        "**{}** repos · **{}** stars · **{}** forks · **{}** followers\n",
-        stats.repos, stats.stars, stats.forks, user.followers
+        "**{}** repos · **{}** stars · forked **{}** times · **{}** followers\n",
+        stats.total, stats.stars, stats.forks, user.followers
     );
 
     if !stats.languages.is_empty() {
@@ -189,6 +218,17 @@ fn strip_shortcodes(s: &str) -> String {
         .join(" ")
 }
 
+fn date(iso: &Option<String>) -> &str {
+    iso.as_deref().and_then(|d| d.get(..10)).unwrap_or("?")
+}
+
+fn plural(n: usize, word: &str) -> String {
+    match n {
+        1 => format!("1 {word}"),
+        n => format!("{} {word}s", num(n as u32)),
+    }
+}
+
 fn num(n: u32) -> String {
     let digits = n.to_string();
     let mut out = String::new();
@@ -218,7 +258,10 @@ fn md_cell(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::stats::{collect, tests::sample};
+    use crate::stats::{
+        collect,
+        tests::{sample, NOW},
+    };
 
     fn user() -> User {
         User {
@@ -255,6 +298,13 @@ mod tests {
     }
 
     #[test]
+    fn plurals() {
+        assert_eq!(plural(1, "fork"), "1 fork");
+        assert_eq!(plural(0, "fork"), "0 forks");
+        assert_eq!(plural(68553, "time"), "68,553 times");
+    }
+
+    #[test]
     fn number_grouping() {
         assert_eq!(num(0), "0");
         assert_eq!(num(999), "999");
@@ -272,29 +322,31 @@ mod tests {
 
     #[test]
     fn plain_text_report() {
-        let stats = collect(&sample(), false, 5);
+        let stats = collect(&sample(), false, 5, NOW);
         let out = text(&user(), &stats, Palette::None, 80);
         assert!(!out.contains('\x1b'));
         assert!(out.contains("someone  Some One"));
         assert!(out.contains("user since 2019, 12 followers, 3 following"));
-        assert!(out.contains("4 repos   13 stars   4 forks   1 archived"));
-        assert!(out.contains("last push: cli on 2026-10-02"));
+        assert!(out.contains("6 repos   13 stars   forked 5 times   1 archived"));
+        assert!(out.contains("5 own (4 public, 1 private), 1 fork left out of the stats"));
+        assert!(out.contains("last push: cli on 2026-10-02, 2 repos active in the last 30 days"));
+        assert!(out.contains("newest: secret, created 2026-09-01"));
         assert!(out.contains("● Rust"));
-        assert!(out.contains("66.7%"));
+        assert!(out.contains("75.0%"));
         assert!(out.contains("★ 7  cli"));
         assert!(out.contains("Small command line tool"));
     }
 
     #[test]
     fn narrow_terminal_drops_descriptions() {
-        let stats = collect(&sample(), false, 5);
+        let stats = collect(&sample(), false, 5, NOW);
         let out = text(&user(), &stats, Palette::None, 20);
         assert!(!out.contains("Small command"));
     }
 
     #[test]
     fn colored_report_has_escape_codes() {
-        let stats = collect(&sample(), false, 5);
+        let stats = collect(&sample(), false, 5, NOW);
         let out = text(&user(), &stats, Palette::TrueColor, 80);
         assert!(out.contains("\x1b[38;2;"));
     }
@@ -303,10 +355,11 @@ mod tests {
     fn markdown_report() {
         let mut repos = sample();
         repos[3].description = Some("pipes | in | text".into());
-        let stats = collect(&repos, false, 5);
+        repos.retain(|r| !r.private);
+        let stats = collect(&repos, false, 5, NOW);
         let md = markdown(&user(), &stats);
         assert!(md.starts_with("### Some One ([@someone](https://github.com/someone))"));
-        assert!(md.contains("**4** repos · **13** stars"));
+        assert!(md.contains("**5** repos · **13** stars · forked **4** times"));
         assert!(md.contains("| Rust | 2 | 66.7% |"));
         assert!(md.contains(
             "| [cli](https://github.com/someone/cli) | 7 | Rust | pipes \\| in \\| text |"

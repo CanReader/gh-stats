@@ -1,3 +1,4 @@
+use std::cell::OnceCell;
 use std::process::Command;
 use std::thread::sleep;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -33,12 +34,16 @@ pub struct Repo {
     pub forks_count: u32,
     pub fork: bool,
     pub archived: bool,
+    #[serde(default)]
+    pub private: bool,
+    pub created_at: Option<String>,
     pub pushed_at: Option<String>,
 }
 
 pub struct Client {
     agent: ureq::Agent,
     token: Option<String>,
+    me: OnceCell<Option<String>>,
 }
 
 impl Client {
@@ -50,6 +55,7 @@ impl Client {
         Self {
             agent: config.into(),
             token,
+            me: OnceCell::new(),
         }
     }
 
@@ -74,10 +80,28 @@ impl Client {
         Ok(user.login)
     }
 
-    pub fn repos(&self, login: &str) -> Result<Vec<Repo>> {
+    fn is_me(&self, login: &str) -> bool {
+        self.me
+            .get_or_init(|| self.token.as_ref().and_then(|_| self.me().ok()))
+            .as_deref()
+            .is_some_and(|me| me.eq_ignore_ascii_case(login))
+    }
+
+    /// Private repos are included when the token can see them: your own
+    /// account, or an org you're a member of.
+    pub fn repos(&self, user: &User, with_private: bool) -> Result<Vec<Repo>> {
+        let login = &user.login;
+        let base = if user.kind == "Organization" {
+            let kind = if with_private { "all" } else { "public" };
+            format!("/orgs/{login}/repos?type={kind}")
+        } else if with_private && self.is_me(login) {
+            "/user/repos?affiliation=owner&visibility=all".to_string()
+        } else {
+            format!("/users/{login}/repos?type=owner")
+        };
         paginate(|page| {
             self.get(&format!(
-                "/users/{login}/repos?type=owner&sort=pushed&per_page={PER_PAGE}&page={page}"
+                "{base}&sort=pushed&per_page={PER_PAGE}&page={page}"
             ))
         })
     }
@@ -185,7 +209,7 @@ fn header(resp: &ureq::http::Response<ureq::Body>, name: &str) -> Option<String>
     resp.headers().get(name)?.to_str().ok().map(str::to_string)
 }
 
-fn now_secs() -> u64 {
+pub fn now_secs() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map(|d| d.as_secs())

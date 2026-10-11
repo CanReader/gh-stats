@@ -1,29 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="840" height="524" viewBox="0 0 840 524">
-<rect width="840" height="524" rx="10" fill="#0d1117" stroke="#30363d"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="564" viewBox="0 0 840 564">
+<rect width="840" height="564" rx="10" fill="#0d1117" stroke="#30363d"/>
 <circle cx="22" cy="20" r="6" fill="#ff5f57"/><circle cx="42" cy="20" r="6" fill="#febc2e"/><circle cx="62" cy="20" r="6" fill="#28c840"/>
 <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'DejaVu Sans Mono',monospace" font-size="14" xml:space="preserve">
-<text y="48"><tspan x="20.0" fill="#3fb950" font-weight="bold">$ </tspan><tspan x="36.9" fill="#c9d1d9">gh-stats rust-lang -t 4</tspan></text>
+<text y="48"><tspan x="20.0" fill="#3fb950" font-weight="bold">$ </tspan><tspan x="36.9" fill="#c9d1d9">gh stats rust-lang -t 4</tspan></text>
 <text y="68"></text>
 <text y="88"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#58a6ff" font-weight="bold">rust-lang</tspan><tspan x="112.7" fill="#c9d1d9">  The Rust Programming Language</tspan></text>
 <text y="108"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#8b949e">org since 2013, 18,552 followers, 0 following</tspan></text>
 <text y="128"></text>
-<text y="148"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#c9d1d9" font-weight="bold">226</tspan><tspan x="62.1" fill="#c9d1d9"> repos   </tspan><tspan x="138.0" fill="#e3b341" font-weight="bold">400,838</tspan><tspan x="197.0" fill="#c9d1d9"> stars   </tspan><tspan x="272.9" fill="#c9d1d9" font-weight="bold">69,211</tspan><tspan x="323.5" fill="#c9d1d9"> forks   56 archived</tspan></text>
-<text y="168"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#8b949e">last push: crates.io-index on 2026-10-11</tspan></text>
-<text y="188"></text>
-<text y="208"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#c9d1d9" font-weight="bold">Languages</tspan></text>
-<text y="228"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#dea584">●</tspan><tspan x="45.3" fill="#c9d1d9"> Rust        </tspan><tspan x="154.9" fill="#dea584">████████████████████████</tspan><tspan x="357.2" fill="#c9d1d9">  107   71.3%</tspan></text>
-<text y="248"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#3572a5">●</tspan><tspan x="45.3" fill="#c9d1d9"> Python      </tspan><tspan x="154.9" fill="#3572a5">██▎                     </tspan><tspan x="357.2" fill="#c9d1d9">   10    6.7%</tspan></text>
-<text y="268"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e34c26">●</tspan><tspan x="45.3" fill="#c9d1d9"> HTML        </tspan><tspan x="154.9" fill="#e34c26">█▍                      </tspan><tspan x="357.2" fill="#c9d1d9">    6    4.0%</tspan></text>
-<text y="288"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#89e051">●</tspan><tspan x="45.3" fill="#c9d1d9"> Shell       </tspan><tspan x="154.9" fill="#89e051">█▍                      </tspan><tspan x="357.2" fill="#c9d1d9">    6    4.0%</tspan></text>
-<text y="308"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#384d54">●</tspan><tspan x="45.3" fill="#c9d1d9"> Dockerfile  </tspan><tspan x="154.9" fill="#384d54">▋                       </tspan><tspan x="357.2" fill="#c9d1d9">    3    2.0%</tspan></text>
-<text y="328"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#f1e05a">●</tspan><tspan x="45.3" fill="#c9d1d9"> JavaScript  </tspan><tspan x="154.9" fill="#f1e05a">▋                       </tspan><tspan x="357.2" fill="#c9d1d9">    3    2.0%</tspan></text>
-<text y="348"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#663399">●</tspan><tspan x="45.3" fill="#c9d1d9"> CSS         </tspan><tspan x="154.9" fill="#663399">▌                       </tspan><tspan x="357.2" fill="#c9d1d9">    2    1.3%</tspan></text>
-<text y="368"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#3178c6">●</tspan><tspan x="45.3" fill="#c9d1d9"> TypeScript  </tspan><tspan x="154.9" fill="#3178c6">▌                       </tspan><tspan x="357.2" fill="#c9d1d9">    2    1.3%</tspan></text>
-<text y="388"></text>
-<text y="408"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#c9d1d9" font-weight="bold">Top repos</tspan></text>
-<text y="428"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9"> 119,698  rust       </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">Empowering everyone to build reliable and efficient software.</tspan></text>
-<text y="448"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9">  64,315  rustlings  </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">Small exercises to get you used to reading and writing Rust code!</tspan></text>
-<text y="468"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9">  22,212  mdBook     </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">Create book from markdown files. Like Gitbook but implemented in…</tspan></text>
-<text y="488"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9">  18,394  book       </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">The Rust Programming Language</tspan></text>
+<text y="148"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#c9d1d9" font-weight="bold">246</tspan><tspan x="62.1" fill="#c9d1d9"> repos   </tspan><tspan x="138.0" fill="#e3b341" font-weight="bold">400,839</tspan><tspan x="197.0" fill="#c9d1d9"> stars   forked </tspan><tspan x="331.9" fill="#c9d1d9" font-weight="bold">69,216 times</tspan><tspan x="433.1" fill="#c9d1d9">   56 archived</tspan></text>
+<text y="168"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#8b949e">226 own, 20 forks left out of the stats (--forks adds them)</tspan></text>
+<text y="188"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#8b949e">last push: crates.io-index on 2026-10-11, 97 repos active in the last 30 days</tspan></text>
+<text y="208"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#8b949e">newest: library-trait-evolution-initiative, created 2026-06-23</tspan></text>
+<text y="228"></text>
+<text y="248"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#c9d1d9" font-weight="bold">Languages</tspan></text>
+<text y="268"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#dea584">●</tspan><tspan x="45.3" fill="#c9d1d9"> Rust        </tspan><tspan x="154.9" fill="#dea584">████████████████████████</tspan><tspan x="357.2" fill="#c9d1d9">  107   71.3%</tspan></text>
+<text y="288"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#3572a5">●</tspan><tspan x="45.3" fill="#c9d1d9"> Python      </tspan><tspan x="154.9" fill="#3572a5">██▎                     </tspan><tspan x="357.2" fill="#c9d1d9">   10    6.7%</tspan></text>
+<text y="308"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e34c26">●</tspan><tspan x="45.3" fill="#c9d1d9"> HTML        </tspan><tspan x="154.9" fill="#e34c26">█▍                      </tspan><tspan x="357.2" fill="#c9d1d9">    6    4.0%</tspan></text>
+<text y="328"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#89e051">●</tspan><tspan x="45.3" fill="#c9d1d9"> Shell       </tspan><tspan x="154.9" fill="#89e051">█▍                      </tspan><tspan x="357.2" fill="#c9d1d9">    6    4.0%</tspan></text>
+<text y="348"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#384d54">●</tspan><tspan x="45.3" fill="#c9d1d9"> Dockerfile  </tspan><tspan x="154.9" fill="#384d54">▋                       </tspan><tspan x="357.2" fill="#c9d1d9">    3    2.0%</tspan></text>
+<text y="368"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#f1e05a">●</tspan><tspan x="45.3" fill="#c9d1d9"> JavaScript  </tspan><tspan x="154.9" fill="#f1e05a">▋                       </tspan><tspan x="357.2" fill="#c9d1d9">    3    2.0%</tspan></text>
+<text y="388"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#663399">●</tspan><tspan x="45.3" fill="#c9d1d9"> CSS         </tspan><tspan x="154.9" fill="#663399">▌                       </tspan><tspan x="357.2" fill="#c9d1d9">    2    1.3%</tspan></text>
+<text y="408"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#3178c6">●</tspan><tspan x="45.3" fill="#c9d1d9"> TypeScript  </tspan><tspan x="154.9" fill="#3178c6">▌                       </tspan><tspan x="357.2" fill="#c9d1d9">    2    1.3%</tspan></text>
+<text y="428"></text>
+<text y="448"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#c9d1d9" font-weight="bold">Top repos</tspan></text>
+<text y="468"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9"> 119,698  rust       </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">Empowering everyone to build reliable and efficient software.</tspan></text>
+<text y="488"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9">  64,316  rustlings  </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">Small exercises to get you used to reading and writing Rust code!</tspan></text>
+<text y="508"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9">  22,212  mdBook     </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">Create book from markdown files. Like Gitbook but implemented in…</tspan></text>
+<text y="528"><tspan x="20.0" fill="#c9d1d9">  </tspan><tspan x="36.9" fill="#e3b341">★</tspan><tspan x="45.3" fill="#c9d1d9">  18,394  book       </tspan><tspan x="222.3" fill="#dea584">Rust</tspan><tspan x="256.0" fill="#c9d1d9">  </tspan><tspan x="272.9" fill="#8b949e">The Rust Programming Language</tspan></text>
 </g>
 </svg>

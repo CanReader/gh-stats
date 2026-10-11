@@ -35,11 +35,18 @@ gh-stats rust-lang                 orgs work too
 gh-stats you yourfriend            several at once
 gh-stats you -t 10                 show 10 top repos (default 5, 0 hides them)
 gh-stats you --forks               count forked repos too
+gh-stats you --public              leave out private repos
 gh-stats you --md                  Markdown for your profile README
 gh-stats you --json                JSON for scripts
 ```
 
 Forks are skipped by default so the numbers are about your own work. Languages are counted by each repo's main language, the same one GitHub shows on the repo page.
+
+You also get a public/private split, how many repos you pushed to in the last 30 days, and your newest repo.
+
+## Private repos
+
+When you look at yourself, or at an org you're a member of, private repos are counted too and marked `(private)` in the list. For anyone else you only see public ones. `--public` turns this off, and `--md` never includes private repos since it's meant to be posted.
 
 ## Put it in your profile README
 
@@ -47,7 +54,7 @@ Forks are skipped by default so the numbers are about your own work. Languages a
 gh-stats you --md
 ```
 
-prints a short summary with a language table and your top repos with links. Paste it into your `username/username` README. It's plain Markdown, so no image service has to be up for it to show.
+prints a short summary with a language table and your top repos with links, public repos only. Paste it into your `username/username` README. It's plain Markdown, so no image service has to be up for it to show.
 
 ## Token
 
@@ -57,7 +64,7 @@ It works without a token, but GitHub only gives 60 requests an hour that way. gh
 2. `GH_TOKEN`
 3. the GitHub CLI, if you're logged in with `gh auth login`
 
-So if you use `gh` you don't have to set anything. Only public data is read.
+So if you use `gh` you don't have to set anything. Nothing is ever written, it only reads.
 
 ## Colors
 
